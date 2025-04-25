@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -28,12 +30,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Category routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/category', [CategoryController::class, 'index'])->name('category.index'); // List
-    Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create'); // Create Form
-    Route::post('/category', [CategoryController::class, 'store'])->name('category.store'); // Store
-    Route::get('/category/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit'); // Edit Form
-    Route::put('/category/{id}', [CategoryController::class, 'update'])->name('category.update'); // Update
-    Route::delete('/category/{id}', [CategoryController::class, 'destroy'])->name('category.destroy'); // Delete
+    Route::resource('categories', CategoryController::class);
+});
+
+// Product routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('products', ProductsController::class);
+});
+
+// Cart routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update'); // Changed to PUT
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 // Miscellaneous routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -46,12 +56,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/shipping', function () {
         return Inertia::render('ShippingOrder/ShippingOrder');
     })->name('shipping');
-    Route::get('/products', function () {
-        return Inertia::render('Products/Products');
-    })->name('products');
-    Route::get('/cart', function () {
-        return Inertia::render('Cart/Cart');
-    })->name('cart');
 });
 
 // Profile routes

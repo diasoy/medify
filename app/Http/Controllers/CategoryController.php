@@ -11,57 +11,47 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::paginate(5);
-        return Inertia::render('Category/Category', [
+        return Inertia::render('Categories/Index', [
             'categories' => $categories,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Category/CreateCategory');
+        return Inertia::render('Categories/Create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => 'required|string|max:255',
         ]);
 
-        Category::create($request->only('name'));
+        Category::create($request->all());
 
-        return redirect()->route('category.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
-    public function edit($id)
-    {
-        $category = Category::findOrFail($id);
 
-        return Inertia::render('Category/EditCategory', [
+    public function edit(Category $category)
+    {
+        return Inertia::render('Categories/Edit', [
             'category' => $category,
         ]);
     }
-
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            'name' => 'required|string|max:255',
         ]);
 
-        $category = Category::findOrFail($id);
-        $category->update($request->only('name'));
+        $category->update($request->all());
 
-        return redirect()->route('category.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
-
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        $category = Category::findOrFail($id);
-
-        if ($category->products()->count() > 0) {
-            return redirect()->route('category.index')->with('error', 'Cannot delete category with associated products.');
-        }
-
         $category->delete();
 
-        return redirect()->route('category.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
 }

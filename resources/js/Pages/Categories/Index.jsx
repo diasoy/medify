@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router, Link } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
 import Pagination from "@/Components/Pagination";
 import AlertDelete from "@/Components/AlertDelete";
 import { usePage } from "@inertiajs/react";
 import NotFound from "@/Components/NotFound";
+import { Link } from "@inertiajs/react";
 
 const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-export default function ListCategory({ categories }) {
-    const user = usePage().props.auth.user;
+export default function Index({ categories }) {
+    const { auth } = usePage().props;
+    const user = auth?.user || {};
 
     const [showAlert, setShowAlert] = useState(false);
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -29,7 +32,7 @@ export default function ListCategory({ categories }) {
 
     const handleConfirmDelete = () => {
         if (selectedCategoryId) {
-            router.delete(route("category.destroy", selectedCategoryId), {
+            router.delete(route("categories.destroy", selectedCategoryId), {
                 preserveScroll: true,
             });
         }
@@ -42,7 +45,7 @@ export default function ListCategory({ categories }) {
         setSelectedCategoryId(null);
     };
 
-    if (user.role !== "admin") {
+    if (!user || user.role !== "admin") {
         return <NotFound />;
     }
 
@@ -59,7 +62,7 @@ export default function ListCategory({ categories }) {
             <div className="overflow-x-auto mt-6 max-w-7xl mx-auto">
                 <div className="flex justify-end mb-4">
                     <Link
-                        href={route("category.create")}
+                        href={route("categories.create")}
                         className="btn btn-primary"
                     >
                         <MdAdd size={18} />
@@ -84,7 +87,7 @@ export default function ListCategory({ categories }) {
                                     <td className="flex gap-2 justify-center">
                                         <Link
                                             href={route(
-                                                "category.edit",
+                                                "categories.edit",
                                                 category.id
                                             )}
                                             className="btn btn-warning"
@@ -113,7 +116,6 @@ export default function ListCategory({ categories }) {
                         )}
                     </tbody>
                 </table>
-
                 {categories?.links && categories.links.length > 3 && (
                     <div className="mt-4">
                         <Pagination

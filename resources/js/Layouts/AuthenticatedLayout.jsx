@@ -15,17 +15,15 @@ export default function AuthenticatedLayout({ header, children }) {
         user.role === "admin"
             ? [
                   { name: "Dashboard", route: "dashboard" },
-                  { name: "Products", route: "products" },
+                  { name: "Products", route: "products.index" },
                   { name: "Customer", route: "customer" },
-                  { name: "Guest Entries", route: "guest" },
-                  { name: "Category", route: "category.index" },
-                  { name: "Creation Request", route: "creation" },
+                  { name: "Category", route: "categories.index" },
                   { name: "Shipping Order", route: "shipping" },
               ]
             : [
                   { name: "Dashboard", route: "dashboard" },
-                  { name: "Products", route: "products" },
-                  { name: "Cart", route: "cart" },
+                  { name: "Products", route: "products.index" },
+                  { name: "Cart", route: "cart.index" },
               ];
 
     return (
