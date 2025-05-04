@@ -1,24 +1,31 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
+import DashboardAdmin from "@/Admin/DashboardAdmin";
+import DashboardCustomer from "@/Customer/DashboardCustomer";
 
 export default function Dashboard() {
-    return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
+  const { auth, userRole, ...props } = usePage().props;
+  const role = userRole || auth.user.role;
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 ">You're logged in!</div>
-                    </div>
-                </div>
-            </div>
-        </AuthenticatedLayout>
-    );
+  return (
+    <AuthenticatedLayout
+      header={
+        <h2 className="text-xl font-semibold leading-tight">Dashboard</h2>
+      }
+    >
+      <Head title="Dashboard" />
+      {role === "admin" ? (
+        <DashboardAdmin {...props} />
+      ) : role === "customer" ? (
+        <DashboardCustomer {...props} />
+      ) : (
+        <div className="flex items-center justify-center h-screen">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <strong>Error:</strong> You don't have permission to access this
+            page.
+          </div>
+        </div>
+      )}
+    </AuthenticatedLayout>
+  );
 }

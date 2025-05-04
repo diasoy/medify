@@ -25,7 +25,7 @@ class ProductsController extends Controller
             });
         }
 
-        $products = $query->with('category')->paginate(5)->withQueryString();
+        $products = $query->with('category')->paginate(4)->withQueryString();
         $categories = Category::all();
 
         if (auth()->user()->role === 'admin') {

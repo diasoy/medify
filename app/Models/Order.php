@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
-
     use HasFactory;
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $table = 'order';
+
     protected static function boot()
     {
         parent::boot();
@@ -23,6 +24,7 @@ class Order extends Model
             }
         });
     }
+
     protected $fillable = [
         'user_id',
         'product_id',
@@ -32,7 +34,7 @@ class Order extends Model
         'payment_status',
         'payment_method',
         'shipping_address',
-        'shipping_status'
+        'shipping_status',
     ];
 
     public function user()

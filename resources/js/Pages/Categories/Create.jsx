@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AuthenticatedLayout from "@/Components/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 export default function Create() {
     const [name, setName] = useState("");

@@ -1,0 +1,21 @@
+<svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="70" fill="#3498db" />
+  
+  <!-- Medical cross -->
+  <rect x="80" y="55" width="40" height="90" rx="5" fill="white" />
+  <rect x="55" y="80" width="90" height="40" rx="5" fill="white" />
+  
+  <!-- Heart rate line -->
+  <path d="M185 100 L210 100 L220 70 L230 130 L240 70 L250 130 L260 100 L285 100" 
+        stroke="#3498db" 
+        stroke-width="8" 
+        fill="none" 
+        stroke-linecap="round" />
+  
+  <!-- Text -->
+  <text x="295" y="110" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#333333">Medify</text>
+  
+  <!-- Tagline -->
+  <text x="295" y="130" font-family="Arial, sans-serif" font-size="14" fill="#666666">Healthcare Solutions</text>
+</svg>
