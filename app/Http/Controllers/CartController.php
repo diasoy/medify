@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -60,5 +62,54 @@ class CartController extends Controller
         $cart->delete();
 
         return back()->with('success', 'Item removed from cart!');
+    }
+    public function updateShippingStatus(Request $request, $orderId)
+    {
+        try {
+            $request->validate([
+                'shipping_status' => 'required|string|in:pending,processing,shipped,delivered,cancelled'
+            ]);
+
+            $order = Order::find($orderId);
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // Only admins can update shipping status
+            if (Auth::user()->role !== 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized action'
+                ], 403);
+            }
+
+            $order->update([
+                'shipping_status' => $request->shipping_status
+            ]);
+
+            Log::info('Shipping status updated successfully', [
+                'order_id' => $orderId,
+                'shipping_status' => $request->shipping_status,
+                'updated_by' => Auth::user()->id
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Shipping status updated successfully',
+                'data' => $order
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to update shipping status: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update shipping status',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

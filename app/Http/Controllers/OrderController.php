@@ -11,9 +11,12 @@ use Midtrans\Snap;
 use Midtrans\Notification;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $user = Auth::user();

@@ -39,12 +39,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Cart routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update'); // Changed to PUT
+    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+    Route::post('/cart/update-payment-status', [CartController::class, 'updatePaymentStatus'])->name('cart.updatePaymentStatus');
 });
+
 // Miscellaneous routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/guest', function () {
@@ -65,9 +68,13 @@ Route::middleware('auth')->group(function () {
 //Order routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('order', OrderController::class);
-    Route::get('/order/status/{orderId}', [OrderController::class, 'getOrderStatus'])->name('order.status');
+    Route::get('/order/status/{orderId}', [OrderController::class, 'getOrderStatus'])
+        ->name('order.status');
     // New route for updating shipping status
     Route::patch('/order/{orderId}/shipping', [OrderController::class, 'updateShippingStatus'])->name('order.shipping.update');
+    Route::get('/order/{order}/pdf', [App\Http\Controllers\OrderController::class, 'generatePdf'])
+        ->middleware(['auth'])
+        ->name('order.pdf');
 });
 
 Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
@@ -75,5 +82,6 @@ Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout')
 // Midtrans notification handling (must be accessible without authentication)
 Route::post('/midtrans/notification', [OrderController::class, 'handleNotification'])
     ->name('midtrans.notification')
-    ->withoutMiddleware(['web', 'auth']);
+    ->withoutMiddleware(['web', 'auth', 'csrf']);
+
 require __DIR__ . '/auth.php';

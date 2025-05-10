@@ -43,7 +43,7 @@ const ProductsAdmin = ({ products }) => {
     >
       <Head title="Products" />
 
-      <div className="py-12">
+      <div className="">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-end mb-4">
             <Link href={route("products.create")} className="btn btn-primary">

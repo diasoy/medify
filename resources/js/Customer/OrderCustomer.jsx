@@ -12,99 +12,99 @@ const OrderCustomer = ({ orders }) => {
     router.get(url, {}, { preserveScroll: true });
   };
 
-  // useEffect(() => {
-  //   const pendingOrders = orderData.filter(
-  //     (order) => order.payment_status === "pending"
-  //   );
-  //   if (pendingOrders.length > 0) {
-  //     checkPendingOrders();
-  //   }
-  // }, []);
+  useEffect(() => {
+    const pendingOrders = orderData.filter(
+      (order) => order.payment_status === "pending"
+    );
+    if (pendingOrders.length > 0) {
+      checkPendingOrders();
+    }
+  }, []);
 
-  // const checkOrderStatus = async (orderId) => {
-  //   setLoadingOrders((prev) => ({ ...prev, [orderId]: true }));
+  const checkOrderStatus = async (orderId) => {
+    setLoadingOrders((prev) => ({ ...prev, [orderId]: true }));
 
-  //   try {
-  //     const response = await axios.get(`/order/status/${orderId}`);
+    try {
+      const response = await axios.get(`/order/status/${orderId}`);
 
-  //     if (response.data.success) {
-  //       setOrderData((prevOrders) =>
-  //         prevOrders.map((order) =>
-  //           order.id === orderId
-  //             ? { ...order, payment_status: response.data.order.payment_status }
-  //             : order
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error(`Failed to check status for order ${orderId}:`, error);
-  //   } finally {
-  //     setLoadingOrders((prev) => ({ ...prev, [orderId]: false }));
-  //   }
-  // };
+      if (response.data.success) {
+        setOrderData((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId
+              ? { ...order, payment_status: response.data.order.payment_status }
+              : order
+          )
+        );
+      }
+    } catch (error) {
+      console.error(`Failed to check status for order ${orderId}:`, error);
+    } finally {
+      setLoadingOrders((prev) => ({ ...prev, [orderId]: false }));
+    }
+  };
 
-  // const checkPendingOrders = async () => {
-  //   const pendingOrders = orderData.filter(
-  //     (order) => order.payment_status === "pending"
-  //   );
+  const checkPendingOrders = async () => {
+    const pendingOrders = orderData.filter(
+      (order) => order.payment_status === "pending"
+    );
 
-  //   const newLoadingState = {};
-  //   pendingOrders.forEach((order) => {
-  //     newLoadingState[order.id] = true;
-  //   });
-  //   setLoadingOrders(newLoadingState);
+    const newLoadingState = {};
+    pendingOrders.forEach((order) => {
+      newLoadingState[order.id] = true;
+    });
+    setLoadingOrders(newLoadingState);
 
-  //   // Check status for all pending orders
-  //   const checkPromises = pendingOrders.map((order) =>
-  //     axios
-  //       .get(`/order/status/${order.id}`)
-  //       .then((response) => {
-  //         if (response.data.success) {
-  //           return { id: order.id, data: response.data.order };
-  //         }
-  //         return null;
-  //       })
-  //       .catch((error) => {
-  //         console.error(`Failed to check status for order ${order.id}:`, error);
-  //         return null;
-  //       })
-  //   );
+    // Check status for all pending orders
+    const checkPromises = pendingOrders.map((order) =>
+      axios
+        .get(`/order/status/${order.id}`)
+        .then((response) => {
+          if (response.data.success) {
+            return { id: order.id, data: response.data.order };
+          }
+          return null;
+        })
+        .catch((error) => {
+          console.error(`Failed to check status for order ${order.id}:`, error);
+          return null;
+        })
+    );
 
-  //   const results = await Promise.all(checkPromises);
+    const results = await Promise.all(checkPromises);
 
-  //   // Update orders based on results
-  //   const updatedOrders = [...orderData];
-  //   results.forEach((result) => {
-  //     if (result) {
-  //       const index = updatedOrders.findIndex(
-  //         (order) => order.id === result.id
-  //       );
-  //       if (index !== -1) {
-  //         updatedOrders[index] = {
-  //           ...updatedOrders[index],
-  //           payment_status: result.data.payment_status,
-  //         };
-  //       }
-  //     }
-  //   });
+    // Update orders based on results
+    const updatedOrders = [...orderData];
+    results.forEach((result) => {
+      if (result) {
+        const index = updatedOrders.findIndex(
+          (order) => order.id === result.id
+        );
+        if (index !== -1) {
+          updatedOrders[index] = {
+            ...updatedOrders[index],
+            payment_status: result.data.payment_status,
+          };
+        }
+      }
+    });
 
-  //   setOrderData(updatedOrders);
-  //   setLoadingOrders({});
-  // };
+    setOrderData(updatedOrders);
+    setLoadingOrders({});
+  };
 
   return (
     <AuthenticatedLayout
       header={
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold leading-tight">Your Orders</h2>
-          {/* {orderData.some((order) => order.payment_status === "pending") && (
+          {orderData.some((order) => order.payment_status === "pending") && (
             <button
               className="btn btn-sm btn-outline"
               onClick={checkPendingOrders}
             >
               Refresh Orders
             </button>
-          )} */}
+          )}
         </div>
       }
     >
@@ -119,7 +119,7 @@ const OrderCustomer = ({ orders }) => {
                   <tr>
                     <th>Order ID</th>
                     <th>Total Payment</th>
-                    {/* <th>Payment Status</th> */}
+                    <th>Payment Status</th>
                     <th>Shipping Status</th>
                     <th>Details</th>
                   </tr>
@@ -134,7 +134,7 @@ const OrderCustomer = ({ orders }) => {
                           currency: "IDR",
                         }).format(order.total_payment)}
                       </td>
-                      {/* <td>
+                      <td>
                         <div className="flex items-center gap-2">
                           <span
                             className={`badge ${getPaymentStatusColor(
@@ -189,7 +189,7 @@ const OrderCustomer = ({ orders }) => {
                             </button>
                           )}
                         </div>
-                      </td> */}
+                      </td>
                       <td>
                         <span
                           className={`badge ${getShippingStatusColor(
@@ -239,8 +239,14 @@ const getPaymentStatusColor = (status) => {
       return "badge-warning";
     case "failed":
       return "badge-error";
+    case "expired":
+      return "badge-error";
+    case "cancelled":
+      return "badge-error";
     case "challenge":
       return "badge-info";
+    case "settlement":
+      return "badge-success";
     default:
       return "badge-ghost";
   }

@@ -116,14 +116,14 @@ const OrderAdmin = ({ orders }) => {
           <h2 className="text-xl font-semibold leading-tight">
             Order Management
           </h2>
-          {/* {orderData.some((order) => order.payment_status === "pending") && (
+          {orderData.some((order) => order.payment_status === "pending") && (
             <button
               className="btn btn-sm btn-outline"
               onClick={refreshAllPendingOrders}
             >
               Refresh Pending Orders
             </button>
-          )} */}
+          )}
         </div>
       }
     >
@@ -139,7 +139,7 @@ const OrderAdmin = ({ orders }) => {
                     <th>Order ID</th>
                     <th>Customer Name</th>
                     <th>Total Payment</th>
-                    {/* <th>Payment Status</th> */}
+                    <th>Payment Status</th>
                     <th>Date</th>
                     <th>Shipping Address</th>
                     <th>Shipping Status</th>
@@ -157,7 +157,7 @@ const OrderAdmin = ({ orders }) => {
                           currency: "IDR",
                         }).format(order.total_payment)}
                       </td>
-                      {/* <td>
+                      <td>
                         <div className="flex items-center gap-2">
                           <span
                             className={`badge ${getPaymentStatusColor(
@@ -212,7 +212,7 @@ const OrderAdmin = ({ orders }) => {
                             </button>
                           )}
                         </div>
-                      </td> */}
+                      </td>
                       <td>
                         {new Date(order.created_at).toLocaleString("id-ID", {
                           year: "numeric",
