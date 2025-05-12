@@ -13,6 +13,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\OrderInvoice;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -179,6 +181,8 @@ class OrderController extends Controller
                 return response()->json(['message' => 'Order not found'], 404);
             }
 
+            $previousStatus = $order->payment_status;
+
             if ($transactionStatus == 'capture') {
                 if ($paymentType == 'credit_card') {
                     if ($fraudStatus == 'challenge') {
@@ -203,9 +207,14 @@ class OrderController extends Controller
 
             $order->save();
 
+            // Send email if payment status changed to success
+            if ($order->payment_status === 'success' && $previousStatus !== 'success') {
+                $this->sendOrderConfirmationEmail($order);
+            }
+
             return response()->json(['message' => 'Notification handled successfully']);
         } catch (\Exception $e) {
-
+            Log::error('Notification handling error: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Notification handling failed',
                 'error' => $e->getMessage(),
@@ -213,6 +222,7 @@ class OrderController extends Controller
         }
     }
 
+    // Also update the checkTransactionStatus method to send email when payment becomes successful
     public function checkTransactionStatus($orderId)
     {
         Config::$serverKey = config('midtrans.server_key');
@@ -226,9 +236,17 @@ class OrderController extends Controller
                 return ['success' => false, 'message' => 'Order not found'];
             }
 
+            $previousStatus = $order->payment_status;
+
             if (is_object($status) && ($status->transaction_status == 'settlement' || $status->transaction_status == 'capture')) {
                 $order->payment_status = 'success';
                 $order->save();
+
+                // Send email if payment status changed to success
+                if ($previousStatus !== 'success') {
+                    $this->sendOrderConfirmationEmail($order);
+                }
+
                 return ['success' => true, 'status' => 'success'];
             } elseif (is_object($status) && $status->transaction_status == 'pending') {
                 $order->payment_status = 'pending';
@@ -249,6 +267,30 @@ class OrderController extends Controller
         }
     }
 
+    // Add a new method to send the email
+    private function sendOrderConfirmationEmail(Order $order)
+    {
+        try {
+            // Make sure we have the full order with all relationships
+            $order = Order::with(['user', 'items.product'])->find($order->id);
+
+            // Send the invoice email
+            Mail::to($order->user->email)
+                ->send(new OrderInvoice($order));
+
+            Log::info('Order confirmation email sent successfully', [
+                'order_id' => $order->id,
+                'user_email' => $order->user->email
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send order confirmation email', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    // Update the getOrderStatus method to also send email if status changes to success
     public function getOrderStatus($orderId)
     {
         try {
@@ -258,10 +300,14 @@ class OrderController extends Controller
                 return response()->json(['success' => false, 'message' => 'Order not found'], 404);
             }
 
+            $previousStatus = $order->payment_status;
+
             if ($order->payment_status == 'pending') {
                 $statusCheck = $this->checkTransactionStatus($orderId);
                 if ($statusCheck['success']) {
                     $order = Order::find($orderId);
+
+                    // If status was changed to success by checkTransactionStatus, the email would have been sent there
                 }
             }
 
