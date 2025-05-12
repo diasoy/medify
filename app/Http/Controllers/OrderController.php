@@ -156,8 +156,6 @@ class OrderController extends Controller
 
     public function handleNotification(Request $request)
     {
-        Log::info('Midtrans notification received', ['raw_input' => $request->all()]);
-
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = config('midtrans.is_sanitized');
@@ -165,7 +163,6 @@ class OrderController extends Controller
 
         try {
             $notificationBody = file_get_contents('php://input');
-            Log::info('Raw notification body', ['body' => $notificationBody]);
 
             $notification = new Notification();
 
@@ -174,14 +171,6 @@ class OrderController extends Controller
             $orderId = $notification->order_id;
             $fraudStatus = $notification->fraud_status;
             $grossAmount = $notification->gross_amount;
-
-            Log::info('Midtrans Notification Processed', [
-                'transaction_status' => $transactionStatus,
-                'payment_type' => $paymentType,
-                'order_id' => $orderId,
-                'fraud_status' => $fraudStatus,
-                'gross_amount' => $grossAmount
-            ]);
 
             $order = Order::find($orderId);
 
@@ -214,17 +203,8 @@ class OrderController extends Controller
 
             $order->save();
 
-            Log::info('Order payment status updated', [
-                'order_id' => $orderId,
-                'payment_status' => $order->payment_status,
-            ]);
-
             return response()->json(['message' => 'Notification handled successfully']);
         } catch (\Exception $e) {
-            Log::error('Midtrans Notification Handling Error', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
 
             return response()->json([
                 'message' => 'Notification handling failed',
@@ -240,7 +220,6 @@ class OrderController extends Controller
 
         try {
             $status = \Midtrans\Transaction::status($orderId);
-            Log::info('Transaction status check', ['order_id' => $orderId, 'status' => $status]);
 
             $order = Order::find($orderId);
             if (!$order) {
@@ -291,8 +270,39 @@ class OrderController extends Controller
                 'order' => $order
             ]);
         } catch (\Exception $e) {
-            Log::error('Get order status error', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function generatePdf($id)
+    {
+        try {
+            $order = Order::with(['user', 'items.product'])->findOrFail($id);
+
+            if (Auth::user()->role !== 'admin' && Auth::id() !== $order->user_id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            Log::info('Starting PDF generation for order', [
+                'order_id' => $id,
+                'user_id' => Auth::id()
+            ]);
+
+            // Using the correct path to the invoice template
+            $pdf = PDF::loadView('invoice', [
+                'order' => $order,
+                'date' => now()->format('Y-m-d H:i:s'),
+            ]);
+
+            Log::info('PDF generated successfully');
+
+            return $pdf->download("order-{$order->id}.pdf");
+        } catch (\Exception $e) {
+            Log::error('PDF generation error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Failed to generate PDF: ' . $e->getMessage()], 500);
         }
     }
 }
