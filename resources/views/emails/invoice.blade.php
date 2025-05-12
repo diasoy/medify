@@ -139,8 +139,16 @@
             @endforeach
         </tbody>
         <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Subtotal</strong></td>
+                <td>{{ number_format($order->total_price, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Tax (11%)</strong></td>
+                <td>{{ number_format($order->getTaxAmount(), 0, ',', '.') }}</td>
+            </tr>
             <tr class="total-row">
-                <td colspan="4" style="text-align: right;">Total Payment</td>
+                <td colspan="4" style="text-align: right;"><strong>Total Payment</strong></td>
                 <td>{{ number_format($order->total_payment, 0, ',', '.') }}</td>
             </tr>
         </tfoot>

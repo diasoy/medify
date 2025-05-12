@@ -134,7 +134,29 @@ export default function Show({ order, auth }) {
                   <tfoot>
                     <tr>
                       <th colSpan={4} className="text-right">
-                        Total
+                        Subtotal
+                      </th>
+                      <th>
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        }).format(order.total_price)}
+                      </th>
+                    </tr>
+                    <tr>
+                      <th colSpan={4} className="text-right">
+                        Tax (11%)
+                      </th>
+                      <th>
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        }).format(Math.round(order.total_price * 0.11))}
+                      </th>
+                    </tr>
+                    <tr className="font-bold">
+                      <th colSpan={4} className="text-right">
+                        Total Payment
                       </th>
                       <th>
                         {new Intl.NumberFormat("id-ID", {

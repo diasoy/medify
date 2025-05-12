@@ -16,16 +16,6 @@ class Order extends Model
     protected $keyType = 'string';
     protected $table = 'order';
 
-    // Remove UUID auto-generation
-    // protected static function boot() {
-    //     parent::boot();
-    //     static::creating(function ($model) {
-    //         if (empty($model->id)) {
-    //             $model->id = (string) Str::uuid();
-    //         }
-    //     });
-    // }
-
     protected $fillable = [
         'id', // Make sure 'id' is in fillable array
         'user_id',
@@ -52,5 +42,41 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Calculate the tax amount (11%)
+     * 
+     * @return float
+     */
+    public function getTaxAmount()
+    {
+        return round($this->total_price * 0.11);
+    }
+
+    /**
+     * Check if the total_payment already includes tax
+     * This helps with backward compatibility for older orders
+     * 
+     * @return bool
+     */
+    public function includesTax()
+    {
+        $withTax = $this->total_price + $this->getTaxAmount();
+        // Allow for minor rounding differences
+        return abs($this->total_payment - $withTax) < 10;
+    }
+
+    /**
+     * Get the total amount with tax
+     * 
+     * @return float
+     */
+    public function getTotalWithTax()
+    {
+        if ($this->includesTax()) {
+            return $this->total_payment;
+        }
+        return $this->total_price + $this->getTaxAmount();
     }
 }

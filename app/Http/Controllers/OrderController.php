@@ -101,9 +101,14 @@ class OrderController extends Controller
             return $item->product->price * $item->quantity;
         });
 
+        // Calculate tax (11%)
+        $taxRate = 0.11;
+        $taxAmount = round($totalPrice * $taxRate);
+        $totalWithTax = $totalPrice + $taxAmount;
+
         $transactionDetails = [
             'order_id' => 'ORDER-' . uniqid(),
-            'gross_amount' => $totalPrice,
+            'gross_amount' => $totalWithTax, // Use total with tax
         ];
 
         $itemDetails = $cartItems->map(function ($item) {
@@ -114,6 +119,14 @@ class OrderController extends Controller
                 'name' => $item->product->title,
             ];
         })->toArray();
+
+        // Add tax as an item
+        $itemDetails[] = [
+            'id' => 'TAX',
+            'price' => $taxAmount,
+            'quantity' => 1,
+            'name' => 'Tax (11%)',
+        ];
 
         $customerDetails = [
             'first_name' => Auth::user()->name,
@@ -140,7 +153,7 @@ class OrderController extends Controller
                 'id' => $transactionDetails['order_id'],
                 'user_id' => Auth::id(),
                 'total_price' => $totalPrice,
-                'total_payment' => $totalPrice,
+                'total_payment' => $totalWithTax, // Save total with tax
                 'payment_status' => 'pending',
                 'payment_method' => 'midtrans',
                 'shipping_address' => $request->address,
