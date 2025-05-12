@@ -47,7 +47,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with('user')->find($id);
+        $order = Order::with(['user', 'items.product'])->find($id);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
@@ -147,6 +147,15 @@ class OrderController extends Controller
                 'shipping_status' => 'pending',
             ]);
 
+            foreach ($cartItems as $cartItem) {
+                $order->items()->create([
+                    'product_id' => $cartItem->product_id,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $cartItem->product->price
+                ]);
+            }
+
+            // Clear the cart after creating order
             Cart::where('user_id', Auth::id())->delete();
 
             return response()->json(['snapToken' => $snapToken]);
