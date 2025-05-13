@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AuthenticatedLayout from "@/Components/Layouts/AuthenticatedLayout";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, usePage } from "@inertiajs/react";
 
 export default function Edit({ category }) {
