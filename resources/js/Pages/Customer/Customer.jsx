@@ -38,6 +38,16 @@ export default function Customer({ users }) {
     setSelectedUserId(null);
   };
 
+  // Role badge component
+  const RoleBadge = ({ role }) => {
+    const badgeClass =
+      role === "admin"
+        ? "badge badge-primary text-white font-medium"
+        : "badge badge-info text-white font-medium";
+
+    return <span className={badgeClass}>{role}</span>;
+  };
+
   if (user.role === "admin") {
     return (
       <AuthenticatedLayout
@@ -63,7 +73,9 @@ export default function Customer({ users }) {
                 <tr key={user.id}>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td>{user.role}</td>
+                  <td>
+                    <RoleBadge role={user.role} />
+                  </td>
                   <td>{formatDate(user.created_at)}</td>
                   <td className="flex gap-2 justify-center">
                     <button

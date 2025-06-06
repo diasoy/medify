@@ -1,61 +1,201 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Medify - Medical E-commerce Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Medify Logo](public/medify_logo.svg)
 
-## About Laravel
+## 📋 Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Medify is a modern e-commerce platform specialized in medical and pharmaceutical products. Built with Laravel, React, and Inertia.js, it offers a seamless shopping experience for medical products with secure payment integration.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Customer Features
 
-## Learning Laravel
+- **Product Browsing & Search**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+  - Browse products by categories
+  - Search functionality
+  - Product filtering
+  - Detailed product views
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Shopping Cart**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+  - Add/remove products
+  - Adjust quantities
+  - Real-time price calculations
+  - Tax calculations
 
-## Laravel Sponsors
+- **Order Management**
+  - Order tracking
+  - Order history
+  - Payment status monitoring
+  - Shipping status updates
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Admin Features
 
-### Premium Partners
+- **Dashboard Analytics**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+  - Total orders overview
+  - Revenue tracking
+  - Monthly order statistics
+  - Customer metrics
 
-## Contributing
+- **Product Management**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+  - Add/Edit/Delete products
+  - Image upload
+  - Category management
+  - Price management
 
-## Code of Conduct
+- **Order Processing**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+  - Order status updates
+  - Payment verification
+  - Shipping management
+  - Order history
 
-## Security Vulnerabilities
+- **Customer Management**
+  - Customer list
+  - Customer details
+  - Role management
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 💻 Technical Architecture
 
-## License
+### Database Schema
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+![Database Schema](assets/database.png)
+
+### Technology Stack
+
+- **Backend**: Laravel 12.9.2
+- **Frontend**: React + Inertia.js
+- **Database**: MySQL
+- **Payment Gateway**: Midtrans
+- **Styling**: Tailwind CSS + DaisyUI
+- **Authentication**: Laravel Breeze
+
+## 🚀 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/diasoy/medify.git
+
+# Install PHP dependencies
+composer install
+
+# Install Node dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Run migrations
+php artisan migrate
+
+# Seed the database
+php artisan db:seed
+
+# Start the development server
+php artisan serve
+
+# Start Vite development server
+npm run dev
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=medify
+DB_USERNAME=root
+DB_PASSWORD=
+
+MIDTRANS_SERVER_KEY=your_server_key
+MIDTRANS_CLIENT_KEY=your_client_key
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_IS_SANITIZED=true
+MIDTRANS_IS_3DS=true
+```
+
+## 👥 User Roles
+
+### Admin
+
+- Full access to dashboard
+- Product management
+- Order management
+- Customer management
+- Category management
+
+### Customer
+
+- Browse products
+- Manage shopping cart
+- Place orders
+- Track order status
+- View order history
+
+## 📱 Screenshots
+
+### Customer Interface
+
+#### Products Page
+
+![Products Page Customer](assets/products-customer.png)
+
+#### Shopping Cart
+
+![Shopping Cart](assets/cart-customer.png)
+
+#### Order History
+
+![Order History](assets/orders-customer.png)
+
+### Admin Interface
+
+#### Dashboard
+
+![Admin Dashboard](assets/dashboard-admin.png)
+
+#### Product Management
+
+![Product Management](assets/products-admin.png)
+
+#### Category Management
+
+![Category Management](assets/category-admin.png)
+
+#### Customer Management
+
+![Customer Management](assets/customer-admin.png)
+
+#### Order Management
+
+![Order Management](assets/shipping-admin.png)
+
+## 🔐 Security Features
+
+- CSRF Protection
+- XSS Prevention
+- SQL Injection Protection
+- Input Validation
+- Secure File Upload
+- Role-based Access Control
+
+## 🛠️ Development Tools
+
+- VS Code
+- Laravel Debugbar
+- React Developer Tools
+- MySQL Workbench
+- Git
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check.

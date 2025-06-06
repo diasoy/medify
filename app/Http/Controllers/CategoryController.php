@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::paginate(5);
+        $categories = Category::orderBy('created_at', 'desc')->paginate(5);
         return Inertia::render('Categories/Index', [
             'categories' => $categories,
         ]);
@@ -38,6 +38,7 @@ class CategoryController extends Controller
             'category' => $category,
         ]);
     }
+
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -48,6 +49,7 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
+
     public function destroy(Category $category)
     {
         $category->delete();

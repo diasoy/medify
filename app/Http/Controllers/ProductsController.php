@@ -25,6 +25,9 @@ class ProductsController extends Controller
             });
         }
 
+        // Add ordering by created_at in descending order
+        $query->orderBy('created_at', 'desc');
+
         $products = $query->with('category')->paginate(4)->withQueryString();
         $categories = Category::all();
 
